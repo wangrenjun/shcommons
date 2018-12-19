@@ -7,6 +7,7 @@ fi
 
 declare -r ENO_ERROR=1              # General error
 declare -r ENO_EACCESS=96           # The file permissions do not allow the attempted operation
+declare -r ENO_ENOENT=97            # No such file or directory
 declare -r ENO_PARAM=98             # Not enough parameters passed
 declare -r ENO_ASSERT_FAILED=99
 declare -r ENO_ILLEGAL_CMD=127      # Command not found
@@ -46,7 +47,7 @@ is_empty()
     [ -z "${1}" ]
 }
 
-is_nonempty()
+is_set()
 {
     [ -n "${1}" ]
 }
@@ -64,6 +65,15 @@ is_positive_number()
 is_negative_number()
 {
     [[ "${1}" =~ ^-[0-9]+$ ]]
+}
+
+is_root()
+{
+    if is_number "${1:-$UID}"; then
+        [ "${1:-$UID}" -eq 0 ]
+    else
+        [ "$(id -u ${1} 2> /dev/null)" = 0 ]
+    fi
 }
 
 has_command()

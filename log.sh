@@ -26,26 +26,6 @@ readonly __LIGHT_CYAN="$(tput bold ; tput setaf 6)"
 readonly __LIGHT_GREY="$(tput setaf 7)"
 readonly __WHITE="$(tput bold; tput setaf 7)"
 
-psuccess()
-{
-    printf "${__GREEN}%s${__NORMAL}\n" "${@}" >&1
-}
-
-perror()
-{
-    printf "${__RED}%s${__NORMAL}\n" "${@}" >&2
-}
-
-pwarning()
-{
-    printf "${__YELLOW}%s${__NORMAL}\n" "${@}" >&2
-}
-
-pinfo()
-{
-    printf "%s\n" "${@}" >&1
-}
-
 psuccessl()
 {
     printf "${__GREEN}%s${__NORMAL}\n" "${*}" >&1
@@ -78,6 +58,27 @@ pause()
     read -s -n1 -p "Press any key to continue.."
 }
 
+peval()
+{
+    local rs rv
+    rs=$(eval "${1}" 2>&1); rv="${?}"
+    if [ "$rv" != 0 ]; then
+        perrorl "${@:2:${#}}" "${1}:" "[$rv]:" "$rs"
+        return "$rv"
+    fi
+    echo -n "$rs"
+}
+
+peval_noout()
+{
+    local rs rv
+    rs=$(eval "${1}" 2>&1 1> /dev/null); rv="${?}"
+    if [ "$rv" != 0 ]; then
+        perrorl "${@:2:${#}}" "${1}:" "[$rv]:" "$rs"
+        return "$rv"
+    fi
+}
+
 die()
 {
     local eno="${1:-0}"; shift
@@ -91,4 +92,16 @@ die_if_levels()
         die "${@}"
     fi
     return "${1:-0}"
+}
+
+# Display the rotating cursor
+spin()
+{
+    local spinner="/-\|"
+    while :; do
+        for (( i = 0; i < ${#spinner}; i++ )); do
+            printf '%s\r' "${spinner:$i:1}"
+            sleep "${1:-1}"
+        done
+    done
 }

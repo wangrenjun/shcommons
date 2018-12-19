@@ -9,11 +9,11 @@ fi
 __abort()
 {
     local msg="Assertion failed:"
-    if is_nonempty "${3}" && is_nonempty "${4}"; then
+    if is_set "${3}" && is_set "${4}"; then
         msg="$msg File \"${3}\", Line ${4}:"
     fi
     msg="$msg ${1}"
-    is_nonempty "${2}" && msg="${msg}: ${2}"
+    is_set "${2}" && msg="${msg}: ${2}"
     [ "$ABORT_WHEN_ASSERT_FAILED" = true ] && msg="$msg  Aborting."
     perrorl "$msg"
     [ "$ABORT_WHEN_ASSERT_FAILED" = true ] && exit "$ENO_ASSERT_FAILED"

@@ -64,3 +64,9 @@ kill_all_by_name()
         ps -e | grep "${1}" | awk '{print $1;}' | xargs kill -9 &> /dev/null
     fi
 }
+
+# Interrupted script by SIGHUP SIGINT SIGQUIT SIGTERM
+sigtrap()
+{
+    trap 'perrorl "Interrupted by signal" >&2; exit' 1 2 3 15
+}

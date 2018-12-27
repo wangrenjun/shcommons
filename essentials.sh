@@ -129,3 +129,15 @@ abs()
 {
     [ "${1}" -lt 0 ] && echo "$((-${1}))" || echo "${1}"
 }
+
+# Absolute path
+abspath()
+{
+    readlink -nf "${1}" 2> /dev/null
+}
+
+# Absolute dir
+absdir()
+{
+    dirname -z $(readlink -nf "${1}") 2> /dev/null
+}

@@ -69,7 +69,7 @@ peval()
     echo -n "$rs"
 }
 
-# No stdout just stderr
+# Eval only output to stderr without stdout
 peval_noout()
 {
     local rs rv
